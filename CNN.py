@@ -5,8 +5,6 @@ import torch
 from sklearn.datasets import make_classification
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
-# from NN_dataset import ProductImageCategoryDataset
-# from amy_image_loader import ProductImageCategoryDataset
 from image_loader import ProductImageCategoryDataset
 
 
@@ -21,18 +19,16 @@ def train(model, epochs=10):
         batch_idx = 0
         for batch in train_loader:
             features, labels = batch
-            # print('label size:', labels.size())
             prediction = model(features)
-            # prediction = model(features) # WRONG
             loss = F.cross_entropy(prediction, labels) # Loss model changes label size 
             loss_total += loss.item()
             loss.backward()
-            # print('loss:', loss.item())
+            print('loss:', loss.item())
             optimiser.step() 
             optimiser.zero_grad()
             writer.add_scalar('Loss', loss.item(), batch_idx)
             batch_idx += 1
-        print('Total loss:', loss_total/batch_idx)
+        # print('Total loss:', loss_total/batch_idx)
 
             
 class CNN(torch.nn.Module):
@@ -62,6 +58,7 @@ if __name__ == '__main__':
     dataset = ProductImageCategoryDataset()
     train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
     model = CNN()
+    # train(model, train_loader)
     train(model)
 
 # RuntimeError: expected scalar type Byte but found Float
