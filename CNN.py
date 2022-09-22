@@ -5,6 +5,8 @@ import torch
 from sklearn.datasets import make_classification
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
+# from NN_dataset import ProductImageCategoryDataset
+# from amy_image_loader import ProductImageCategoryDataset
 from image_loader import ProductImageCategoryDataset
 
 
@@ -14,9 +16,12 @@ def train(model, epochs=10):
 
     writer = SummaryWriter()
 
+    batch_idx = 0
+    loss_total = 0
+    epoch = 0
+
     for epoch in range(epochs):
-        loss_total = 0
-        batch_idx = 0
+        print('range:', range(epochs))
         for batch in train_loader:
             features, labels = batch
             prediction = model(features)
@@ -28,7 +33,9 @@ def train(model, epochs=10):
             optimiser.zero_grad()
             writer.add_scalar('Loss', loss.item(), batch_idx)
             batch_idx += 1
-        # print('Total loss:', loss_total/batch_idx)
+            print('epoch', epoch)
+            epoch += 1 # why does this not stop???
+        print('Total loss:', loss_total/batch_idx)
 
             
 class CNN(torch.nn.Module):
@@ -58,7 +65,11 @@ if __name__ == '__main__':
     dataset = ProductImageCategoryDataset()
     train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
     model = CNN()
-    # train(model, train_loader)
     train(model)
 
-# RuntimeError: expected scalar type Byte but found Float
+    torch.save(model.state_dict(), 'facebook-market-search/model_evaluation/model-01/weights/model-01.pt')
+    
+    state_dict = torch.load('model.pt')
+    new_model = CNN()
+    new_model.load_state_dict(state_dict)
+    train(new_model)

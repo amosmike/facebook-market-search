@@ -11,7 +11,7 @@ import torch.nn.functional as F
 class ProductImageCategoryDataset(Dataset):
     def __init__(self, 
                 labels_level: int = 0,
-                root_dir: str = 'saved_data/data_all.pkl',
+                root_dir: str = 'facebook-market-search/saved_data/data_all.pkl',
                 transform=None,
                 shuffle=None,
                 batch_size=None):

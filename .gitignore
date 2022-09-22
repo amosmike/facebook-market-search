@@ -15,6 +15,8 @@ clean_images_pickle.pkl
 clean_images_pickle/clean_images_pickle.pkl
 runs
 data_all.plk
+model_evaluation
+
 
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py
