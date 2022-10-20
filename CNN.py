@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 # from NN_dataset import ProductImageCategoryDataset
 # from amy_image_loader import ProductImageCategoryDataset
 from image_loader import ProductImageCategoryDataset
-
+from tqdm import tqdm
 
 def train(model, epochs=10):
 
@@ -18,23 +18,21 @@ def train(model, epochs=10):
 
     batch_idx = 0
     loss_total = 0
-    epoch = 0
 
     for epoch in range(epochs):
-        print('range:', range(epochs))
-        for batch in train_loader:
+        pbar = tqdm(train_loader)
+        for batch in pbar:
             features, labels = batch
             prediction = model(features)
             loss = F.cross_entropy(prediction, labels) # Loss model changes label size 
             loss_total += loss.item()
             loss.backward()
-            print('loss:', loss.item())
+            # print('loss:', loss.item())
             optimiser.step() 
             optimiser.zero_grad()
             writer.add_scalar('Loss', loss.item(), batch_idx)
+            pbar.set_description(f"Loss: {loss.item()}. Epoch: {epoch}/{epochs}")
             batch_idx += 1
-            print('epoch', epoch)
-            epoch += 1 # why does this not stop???
         print('Total loss:', loss_total/batch_idx)
 
             
@@ -62,14 +60,14 @@ class CNN(torch.nn.Module):
         return self.layers(X)
 
 if __name__ == '__main__':
-    dataset = ProductImageCategoryDataset()
-    train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
-    model = CNN()
-    train(model)
+    # If model.pt does not exist;
+    # dataset = ProductImageCategoryDataset()
+    # train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
+    # model = CNN()
+    # train(model)
+    # torch.save(model.state_dict(), 'model.pt')
 
-    torch.save(model.state_dict(), 'facebook-market-search/model_evaluation/model-01/weights/model-01.pt')
-    
+    # If model.pt does exist;
     state_dict = torch.load('model.pt')
     new_model = CNN()
     new_model.load_state_dict(state_dict)
-    train(new_model)
