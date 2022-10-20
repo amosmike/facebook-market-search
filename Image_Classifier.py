@@ -9,6 +9,17 @@ from torch.utils.tensorboard import SummaryWriter
 # from amy_image_loader import ProductImageCategoryDataset
 from image_loader import ProductImageCategoryDataset
 from tqdm import tqdm
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+def accuracy(model):
+    for batch in train_loader:
+            features, labels = batch
+            encoder = {y: x for (x, y) in enumerate(set(labels))}
+            prediction = model(features)
+            # decoder = {x: y for (x, y) in enumerate(set(labels))}
+            p = precision_score(labels, prediction)
+            r = recall_score(labels, prediction)
+    return 2 * (p*r) / (p+r)
 
 def train(model, epochs=10):
 
@@ -61,13 +72,17 @@ class CNN(torch.nn.Module):
 
 if __name__ == '__main__':
     # If model.pt does not exist;
-    # dataset = ProductImageCategoryDataset()
-    # train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
+    dataset = ProductImageCategoryDataset()
+    train_loader = DataLoader(dataset, shuffle=True, batch_size=8)
     # model = CNN()
     # train(model)
-    # torch.save(model.state_dict(), 'model.pt')
+    # torch.save(model.state_dict(), 'model-01.pt')
+
+    # Accuracy
+    
 
     # If model.pt does exist;
-    state_dict = torch.load('model.pt')
+    state_dict = torch.load('model_evaluation/model-01/weights/model-01.pt')
     new_model = CNN()
     new_model.load_state_dict(state_dict)
+    print(accuracy(new_model))
