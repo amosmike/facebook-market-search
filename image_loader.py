@@ -1,6 +1,7 @@
 from cProfile import label
 from unicodedata import category
-import pandas as pd 
+import pandas as pd
+from sklearn.metrics import accuracy_score 
 from torch.utils.data import Dataset, DataLoader
 import os
 import torch
@@ -9,6 +10,8 @@ from torchvision.transforms import ToTensor
 import torch.nn.functional as F
 
 class ProductImageCategoryDataset(Dataset):
+    # print("CURRENT WORKING DIC", os.getcwd())
+
     def __init__(self, 
                 labels_level: int = 0,
                 root_dir: str = 'saved_data/data_all.pkl',
@@ -39,7 +42,6 @@ class ProductImageCategoryDataset(Dataset):
         label = torch.tensor(label).long()
         
         image = self.images[index]
-
         image = torch.tensor(asarray(image)).float()
         image = image.reshape(3, 64, 64) # Channels, height, width
 
