@@ -15,8 +15,6 @@ import numpy as np
 class image_classifier(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        # self.linear_layer = torch.nn.Linear(64, 16) #(No. features, no. layers) # ERROR
-        # self.linear_layer2 = torch.nn.Linear(16, 1)
         self.layers = torch.nn.Sequential(
             torch.nn.Conv2d(3, 64, 3), # (input channels = LGB, output channels = how many features (can change), no. kernals) | image shape (3, 64, 64)
             torch.nn.ReLU(),
@@ -28,11 +26,6 @@ class image_classifier(torch.nn.Module):
         )
 
     def forward(self, X):
-        # print(X.size())
-        # X = self.linear_layer(X)
-        # X = F.relu(X)
-        # X = self.linear_layer2(X)
-        # return X
         return self.layers(X)
 
 def train(model, epochs=10):
@@ -63,15 +56,6 @@ def train(model, epochs=10):
             pbar.set_description(f"Epoch = {epoch+1}/{epochs}. Acc = {round(torch.sum(torch.argmax(prediction, dim=1) == labels).item()/len(labels), 2)}, Total_acc = {round(np.mean(hist_accuracy), 2)}, Losses = {round(loss.item(), 2)}" )
         print('Total loss:', loss_total/batch_idx)
 
-
-# def accuracy(model, dataset, dataloader):
-#     # for batch in train_loader:
-#     features, labels = batch
-#     prediction = model(features)
-#     p = precision_score(labels, prediction)
-#     r = recall_score(labels, prediction)
-#     return 2 * (p*r) / (p+r)
-
 if __name__ == '__main__':
     # If model.pt does not exist;
     dataset = ProductImageCategoryDataset()
@@ -79,10 +63,3 @@ if __name__ == '__main__':
     model = image_classifier()
     train(model)
     torch.save(model.state_dict(), 'model-02.pt')   
-    
-
-    # If model.pt does exist;
-    # state_dict = torch.load('model_evaluation/model-01/weights/model-01.pt')
-    # new_model = image_classifier()
-    # new_model.load_state_dict(state_dict)
-    # accuracy(new_model, dataset, train_loader)
