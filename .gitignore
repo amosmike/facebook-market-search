@@ -14,7 +14,6 @@ raw
 clean_images_pickle.pkl
 clean_images_pickle/clean_images_pickle.pkl
 runs
-data_all.plk
 model_evaluation
 final_models
 BEE_EXAMPLE
