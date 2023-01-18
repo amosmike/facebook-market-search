@@ -23,6 +23,7 @@ class ProductImageCategoryDataset(Dataset):
         super().__init__()
 
         self.root_dir = root_dir
+
         if not os.path.exists(self.root_dir):
             raise FileNotFoundError(f"The file {self.root_dir} not found")
 
@@ -36,8 +37,6 @@ class ProductImageCategoryDataset(Dataset):
         self.num_classes = len(set(self.labels))
         # print("NUMBER OF CLASSES:", self.num_classes)
         self.encoder = {y: x for (x, y) in enumerate(set(self.labels))}
-
-
         self.decoder = {x: y for (x, y) in enumerate(set(self.labels))}
     
         f = open("decoder.pkl","wb")
@@ -52,12 +51,13 @@ class ProductImageCategoryDataset(Dataset):
 
         label = self.labels[index]
         label = self.encoder[label]
-        label = torch.tensor(label).long()
+        # label = torch.tensor(label).long()
         label = int(label)
         
         image = self.images[index]
-        image = torch.tensor(asarray(image)).float()
-        image = image.reshape(3, 64, 64) # Channels, height, width
+        # print(image)
+        # image = torch.tensor(asarray(image)).float()
+        # image = image.reshape(3, 64, 64) # Channels, height, width
 
         if self.transform:
             image = self.transform(image)
