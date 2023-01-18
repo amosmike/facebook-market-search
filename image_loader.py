@@ -1,14 +1,19 @@
+#%%  
 from cProfile import label
 from unicodedata import category
-import pandas as pd 
+import pandas as pd
+from sklearn.metrics import accuracy_score 
 from torch.utils.data import Dataset, DataLoader
 import os
 import torch
 from numpy import asarray, datetime_as_string
 from torchvision.transforms import ToTensor
 import torch.nn.functional as F
+import pickle
 
 class ProductImageCategoryDataset(Dataset):
+    # print("CURRENT WORKING DIC", os.getcwd())
+
     def __init__(self, 
                 labels_level: int = 0,
                 root_dir: str = 'saved_data/data_all.pkl',
@@ -29,21 +34,30 @@ class ProductImageCategoryDataset(Dataset):
         self.images = products['Image'].to_list()
         
         self.num_classes = len(set(self.labels))
+        # print("NUMBER OF CLASSES:", self.num_classes)
         self.encoder = {y: x for (x, y) in enumerate(set(self.labels))}
+
+
         self.decoder = {x: y for (x, y) in enumerate(set(self.labels))}
+    
+        f = open("decoder.pkl","wb")
+        pickle.dump(self.decoder,f)
+        f.close()
+
+        f = open("encoder.pkl","wb")
+        pickle.dump(self.encoder,f)
+        f.close()
 
     def __getitem__(self, index):
 
         label = self.labels[index]
         label = self.encoder[label]
         label = torch.tensor(label).long()
+        label = int(label)
         
         image = self.images[index]
-
         image = torch.tensor(asarray(image)).float()
         image = image.reshape(3, 64, 64) # Channels, height, width
-
-        label = int(label)
 
         if self.transform:
             image = self.transform(image)
@@ -57,7 +71,15 @@ class ProductImageCategoryDataset(Dataset):
     def get_category(x, level: int = 0):
         return x.split('/')[level].strip()
 
-dataset = ProductImageCategoryDataset()
-
 if __name__ == '__main__':
     dataset = ProductImageCategoryDataset()
+    # with open('decoder.pkl', 'rb') as handle:
+    #         decoder = pickle.load(handle)
+    # print(decoder)
+
+    # with open('encoder.pkl', 'rb') as handle:
+    #         encoder = pickle.load(handle)
+    # print(encoder)
+
+
+# %%
