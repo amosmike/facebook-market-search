@@ -1,18 +1,17 @@
 #%%  
-from cProfile import label
-from unicodedata import category
-import pandas as pd
-from sklearn.metrics import accuracy_score 
-from torch.utils.data import Dataset, DataLoader
 import os
 import torch
-from numpy import asarray, datetime_as_string
-from torchvision.transforms import ToTensor
-import torch.nn.functional as F
 import pickle
+import pandas as pd
+from cProfile import label
+import torch.nn.functional as F
+from unicodedata import category
+from sklearn.metrics import accuracy_score 
+from torchvision.transforms import ToTensor
+from numpy import asarray, datetime_as_string
+from torch.utils.data import Dataset, DataLoader
 
 class ProductImageCategoryDataset(Dataset):
-    # print("CURRENT WORKING DIC", os.getcwd())
 
     def __init__(self, 
                 labels_level: int = 0,
@@ -51,13 +50,9 @@ class ProductImageCategoryDataset(Dataset):
 
         label = self.labels[index]
         label = self.encoder[label]
-        # label = torch.tensor(label).long()
         label = int(label)
         
         image = self.images[index]
-        # print(image)
-        # image = torch.tensor(asarray(image)).float()
-        # image = image.reshape(3, 64, 64) # Channels, height, width
 
         if self.transform:
             image = self.transform(image)
