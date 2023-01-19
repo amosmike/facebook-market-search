@@ -38,7 +38,7 @@ class ResNetCNN(torch.nn.Module):
 
 def train(model, train_loader, val_loader, test_loader, epochs=20):
 
-    optimiser = torch.optim.SGD(model.parameters(), lr=0.0001)
+    optimiser = torch.optim.SGD(model.parameters(), lr=0.00001)
     writer = SummaryWriter()
     batch_idx = 0
     loss_total = 0
@@ -63,7 +63,7 @@ def train(model, train_loader, val_loader, test_loader, epochs=20):
             batch_idx += 1
 
             pbar.set_description(f"Epoch = {epoch+1}/{epochs}. Acc = {round(np.mean(hist_accuracy), 2)}, Loss = {round(loss.item(), 2)}, Average Loss = {round(loss_total/batch_idx, 2)}" ) # Loss = {round(loss.item(), 2)},
-            writer.add_scalar('Loss = ', loss.item(), batch_idx)
+            writer.add_scalar('Loss', loss.item(), batch_idx)
             # writer.add_scalar(f'Average Loss = {round(loss_total/batch_idx, 2)}', batch_idx)
             # writer.add_scalar(f'Accuracy = {round(np.mean(hist_accuracy), 2)}', batch_idx)
         
@@ -72,8 +72,8 @@ def train(model, train_loader, val_loader, test_loader, epochs=20):
         # evaluate the validation set performance
         print('Evaluating on valiudation set')
         val_loss, val_acc = evaluate(model, val_loader)
-        writer.add_scalar("Loss/Val", round(val_loss, 2), batch_idx)
-        writer.add_scalar("Accuracy/Val", round(val_acc, 2), batch_idx)
+        writer.add_scalar("Loss/Val", val_loss, batch_idx)
+        writer.add_scalar("Accuracy/Val", val_acc, batch_idx)
 
     print('Evaluating on test set')
     test_loss = evaluate(model, test_loader)
