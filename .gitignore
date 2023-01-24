@@ -17,12 +17,14 @@ runs
 model_evaluation
 final_models
 BEE_EXAMPLE
-cleaned_images
+cleaned_images/
 saved_data
 sandbox.ipynb
 test_final_model.ipynb
 test.*
 to_del.py
+cleaned_images
+
 
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py
