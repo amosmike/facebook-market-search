@@ -6,7 +6,6 @@ from datetime import datetime
 import torch.nn.functional as F
 from dataset import ImagesDataset
 from torchvision import transforms
-from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from classifier_1000 import TransferLearning
 from torch.utils.data import random_split
@@ -55,8 +54,8 @@ def train(
         # evaluate the validation set performance
         print('Evaluating on valiudation set...')
         val_loss, val_acc = evaluate(model, val_loader)
-        writer.add_scalar("Loss/Val", val_loss, batch_idx)
-        writer.add_scalar("Accuracy/Val", val_acc, batch_idx)
+        writer.add_scalar("Validation Set Loss", val_loss, batch_idx)
+        writer.add_scalar("Validation Set Accuracy", val_acc, batch_idx)
 
         # Save weights
         # torch.save(model.state_dict(), f'model_evaluation/weights/transfer_learning_{date_time}_lr_{lr}_epoch_{epoch+1}_acc_{round(np.mean(hist_accuracy), 2)}.pt')      
@@ -126,7 +125,7 @@ if __name__ == "__main__":
     torch.save(model.state_dict(), f'final_model/image_model.pt')
     print("Training Successfull")
 
-    #  USE PRE TRAINED MODEL
+    # USE PRE TRAINED MODEL
     # print("Loading Existing Model...")
     # state_dict = torch.load('model_evaluation/weights/ResNetCNN_2023_01_14.pt')
     # model.load_state_dict(state_dict)

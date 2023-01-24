@@ -1,38 +1,45 @@
 #%%
 import torch
-import pickle
+import pandas as pd
 from PIL import Image
+from dataset import ImagesDataset
 from torchvision import transforms
 from classifier_1000 import TransferLearning
 
 class ImageProcessor:
-
-    def __init__(self, idx_to_cat: dict):
-        '''class constructor - inputs are dicts to transform indices to categories'''
+    def __init__(self, decoder: dict):
+        '''
+        '''
         self.model= TransferLearning()
         self.transform=self.model.transform
-        self.state_dict=torch.load('final_models/image_model.pt ')
+        self.state_dict=torch.load('final_model/image_model.pt')
         self.model.load_state_dict(self.state_dict)
-        self.model.eval()
+        # self.model.eval()
+        self.decoder = decoder
         
-        self.idx_to_cat = idx_to_cat
-        
-    def __prediction__(self,image_fp):
-        '''function to generate a prediction based on an input image'''
-        img=Image.open(image_fp) 
+    def __prediction__(self, img):
+        '''
+        '''
+        img=Image.open(img)
         img=self.transform(img).unsqueeze(0)
-        assert torch.is_tensor(img)
+        assert torch.is_tensor(img) # immediately trigger an error if condition is false
+
         prediction = self.model.forward(img) 
-        probs = torch.nn.functional.softmax(prediction, dim=1)
-        conf, classes = torch.max(probs, 1)
-        return conf.item(), self.idx_to_cat[classes.item()]
+        probability = torch.nn.functional.softmax(prediction, dim=1)
+        confidence, classes = torch.max(probability, 1)
+        return round(confidence.item(), 2), self.decoder[classes.item()]
 
-# image_fp = ('cleaned_images/0c2f81f8-7d98-42e2-9d7d-836335fa08df.jpg')
+if __name__ == "__main__":
+    # image_size = 128
+    # dataset = ImagesDataset(transform=None)
+    # img, label = dataset[700]
+    # img.show()
+    # print(dataset.idx_to_category_name[label])
 
-# with open('idx_to_cat.pickle', 'rb') as handle:
-#     idx_to_cat=pickle.load(handle)
+    img = ('cleaned_images/0a1baaa8-4556-4e07-a486-599c05cce76c.jpg')
+    decoder = pd.read_pickle(r'decoder.pkl')    
+    processor=ImageProcessor(decoder=decoder)
+    prediction = processor.__prediction__(img)
+    print(prediction)
 
-# processor=ImageProcessor(idx_to_cat = idx_to_cat)
-# processor.get_prediction(image_fp)
-
-# %%
+#%%

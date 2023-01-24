@@ -26,6 +26,7 @@ to_del.py
 cleaned_images
 *.jpg
 tim*
+final_model
 
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py

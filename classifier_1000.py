@@ -1,9 +1,7 @@
-from turtle import forward
 import torch
+from torchvision import transforms
 from torchvision.models import resnet50
 from torchvision.models import ResNet50_Weights
-import os
-import time
 
 class Identity(torch.nn.Module):
     def __init__(self) -> None:
@@ -29,6 +27,12 @@ class TransferLearning(torch.nn.Module):
             torch.nn.Linear(2048, 1000)
         )
         self.layers.fc = linear_layers
+        self.image_size = 128
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size),
+            transforms.RandomCrop((self.image_size), pad_if_needed=True),
+            transforms.ToTensor(),
+            ])
 
     def forward(self, X):
         return self.layers(X)
