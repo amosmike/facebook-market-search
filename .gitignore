@@ -17,6 +17,12 @@ runs
 model_evaluation
 final_models
 BEE_EXAMPLE
+cleaned_images
+saved_data
+sandbox.ipynb
+test_final_model.ipynb
+test.*
+to_del.py
 
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py
@@ -31,7 +37,6 @@ clean_images_pickle/
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/clean_images_pickle
 /clean_images_pickle.pkl
 
-**.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

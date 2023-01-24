@@ -1,9 +1,12 @@
 #%%
+from matplotlib.transforms import Transform
 import torch 
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 import torch.nn.functional as F
+from dataset import ImagesDataset # Tim's 
 from torchvision import transforms
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
@@ -17,7 +20,9 @@ from image_loader import ProductImageCategoryDataset
 class ResNetCNN(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
+        # self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
+        self.layers = resnet50(weights=ResNet50_Weights)
+        self.layers.fc = torch.nn.Linear(2048, 13)
 
         for param in self.layers.parameters():
             param.grad_required = False
@@ -37,8 +42,8 @@ class ResNetCNN(torch.nn.Module):
         return self.layers(X)
 
 def train(model, train_loader, val_loader, test_loader, epochs=20):
-
-    optimiser = torch.optim.SGD(model.parameters(), lr=0.00001)
+    lr = 0.0001
+    optimiser = torch.optim.SGD(model.parameters(), lr=lr)
     writer = SummaryWriter()
     batch_idx = 0
     loss_total = 0
@@ -67,15 +72,15 @@ def train(model, train_loader, val_loader, test_loader, epochs=20):
             # writer.add_scalar(f'Average Loss = {round(loss_total/batch_idx, 2)}', batch_idx)
             # writer.add_scalar(f'Accuracy = {round(np.mean(hist_accuracy), 2)}', batch_idx)
         
-        torch.save(model.state_dict(), f'model_evaluation/weights/ResNetCNN_{date_time}_epoch_{epoch+1}_acc_{round(np.mean(hist_accuracy), 2)}.pt')      
+        torch.save(model.state_dict(), f'model_evaluation/weights/ResNetCNN_{date_time}_lr_{lr}_epoch_{epoch+1}_acc_{round(np.mean(hist_accuracy), 2)}.pt')      
         
         # evaluate the validation set performance
-        print('Evaluating on valiudation set')
+        print('Evaluating on valiudation set...')
         val_loss, val_acc = evaluate(model, val_loader)
         writer.add_scalar("Loss/Val", val_loss, batch_idx)
         writer.add_scalar("Accuracy/Val", val_acc, batch_idx)
 
-    print('Evaluating on test set')
+    print('Evaluating on test set...')
     test_loss = evaluate(model, test_loader)
     # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
@@ -118,7 +123,15 @@ if __name__ == '__main__':
         transforms.ToTensor(),
         ])    
     
-    dataset = ProductImageCategoryDataset(transform=transform)
+    dataset = ImagesDataset(transform=transform)
+    # img, labels = dataset[7100]
+    # img.show()
+    # print(labels)
+    # print(dataset.idx_to_category_name[labels])
+    
+    # products_df=dataset['products']
+    # products_df=products_df.sample(frac=0.1)
+
     train_set,val_set,test_set = split_dataset(dataset)
 
     batch_size=16
@@ -132,7 +145,6 @@ if __name__ == '__main__':
     torch.save(model.state_dict(), f'model_evaluation/weights/ResNetCNN_{date_time}.pt')
     print("Training Successfull")
 
-
     #  USE PRE TRAINED MODEL
     # print("Loading Existing Model...")
     # state_dict = torch.load('model_evaluation/weights/ResNetCNN_2023_01_14.pt')
@@ -141,3 +153,5 @@ if __name__ == '__main__':
     # train(model, train_loader, 1)
     # torch.save(model.state_dict(), 'model_evaluation/weights/ResNetCNN_2023_01_14.pt')
     # print("Re-training Successfull")
+
+#%%

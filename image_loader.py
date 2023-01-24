@@ -15,7 +15,7 @@ class ProductImageCategoryDataset(Dataset):
 
     def __init__(self, 
                 labels_level: int = 0,
-                root_dir: str = 'saved_data/data_all.pkl',
+                root_dir: str = 'idx_to_cat.pkl',
                 transform=None,
                 shuffle=None,
                 batch_size=None):
@@ -29,9 +29,13 @@ class ProductImageCategoryDataset(Dataset):
         self.transform = transform
 
         products = pd.read_pickle(self.root_dir) #, lineterminator='\n')
+        # print("PRODUCTS", products)
+        # products=products.sample(frac=0.1) # DEBUG - remove 
         products['category'] = products['category'].apply(lambda x: self.get_category(x, labels_level))
         self.labels = products['category'].to_list()
         self.images = products['Image'].to_list()
+        self.description = products['product_description'].to_list()
+        # self.index = products['index'].to_list()
         
         self.num_classes = len(set(self.labels))
         # print("NUMBER OF CLASSES:", self.num_classes)
@@ -54,10 +58,12 @@ class ProductImageCategoryDataset(Dataset):
         
         image = self.images[index]
 
-        if self.transform:
-            image = self.transform(image)
+        description = self.description[index]
+
+        # if self.transform:
+        #     image = self.transform(image)
         
-        return (image, label)
+        return image, label, description # had brackets? 
 
     def __len__(self):
         return len(self.labels)
@@ -68,13 +74,5 @@ class ProductImageCategoryDataset(Dataset):
 
 if __name__ == '__main__':
     dataset = ProductImageCategoryDataset()
-    # with open('decoder.pkl', 'rb') as handle:
-    #         decoder = pickle.load(handle)
-    # print(decoder)
-
-    # with open('encoder.pkl', 'rb') as handle:
-    #         encoder = pickle.load(handle)
-    # print(encoder)
-
 
 # %%
