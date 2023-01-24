@@ -28,25 +28,6 @@ class ImagesDataset(Dataset):
         }
 
     def __getitem__(self, idx):
-       return self.get_X_y_from_img_idx(idx)
-
-    def __repr__(self):
-        return "hello"  
-    
-    def __len__(self):
-        return len(self.all_images)
-        
-    def load_dataframe(self):
-        '''loads the products csv from the Facebook Marketplace porject into a pandas Dataframe.
-        Additinoally encodes the first layer of the product category as a unique int '''
-        product_df = pd.read_csv('cleaned_products.csv',lineterminator='\n', index_col=0) ######
-        product_df['price'] = product_df['price'].replace('[\£,]', '', regex=True).astype(float)
-        image_df=pd.read_csv('Images.csv',lineterminator='\n', index_col=0) #######
-        self.image_df=image_df.merge(product_df, left_on ='product_id', right_on='id')
-        self.image_df['cat_L1'] = [catter.split("/")[0] for catter in self.image_df['category']]
-        self.image_df=self.image_df.sample(frac=0.1) # THIS IS FOR DEBUG - makes dataset much smaller!
-
-    def get_X_y_from_img_idx(self, idx):
         "Selects model and features from one entry in the dataset, specified by idx"
         cwd = os.getcwd()
         image_ID=self.image_df.iloc[idx]['id_x']
@@ -58,13 +39,41 @@ class ImagesDataset(Dataset):
         category_idx = self.category_name_to_idx[self.image_df.iloc[idx]['cat_L1']]
         return img, category_idx
 
-    def show_example_image(self,idx):
+    def __repr__(self):
+        return "Nothing here yet"  
+    
+    def __len__(self):
+        return len(self.all_images)
+        
+    def load_dataframe(self):
+        '''loads the products csv from the Facebook Marketplace porject into a pandas Dataframe.
+        Additinoally encodes the first layer of the product category as a unique int '''
+        product_df = pd.read_csv('cleaned_products.csv',lineterminator='\n', index_col=0) ######
+        product_df['price'] = product_df['price'].replace('[\£,]', '', regex=True).astype(float)
+        image_df=pd.read_csv('images.csv',lineterminator='\n', index_col=0) #######
+        self.image_df=image_df.merge(product_df, left_on ='product_id', right_on='id')
+        self.image_df['cat_L1'] = [catter.split("/")[0] for catter in self.image_df['category']]
+        self.image_df=self.image_df.sample(frac=0.1) # THIS IS FOR DEBUG - makes dataset much smaller!
+
+    # def get_X_y_from_img_idx(self, idx):
+    #     "Selects model and features from one entry in the dataset, specified by idx"
+    #     cwd = os.getcwd()
+    #     image_ID=self.image_df.iloc[idx]['id_x']
+    #     image_fp = ( cwd + '/cleaned_images/' + image_ID + '.jpg')
+    #     # print(img_fp)
+    #     img = Image.open(image_fp)
+    #     if self.transform:
+    #         img = self.transform(img)
+    #     category_idx = self.category_name_to_idx[self.image_df.iloc[idx]['cat_L1']]
+    #     return img, category_idx
+
+    def __show_example_image__(self,idx):
         "Displays an example image from the dataset"
         img, cat_idx=self.get_X_y_from_img_idx(idx)
         img.show()
         print('category is: ' +str(cat_idx))
     
-    def get_value_frequencies(self):
+    def __get_value_frequencies__(self):
         "Method to find relative frequencies of each product category, for dataset balancing"
         value_counts=self.image_df['cat_L1'].value_counts()
         total_n=self.image_df.shape[0]

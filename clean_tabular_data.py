@@ -1,4 +1,5 @@
 #%%
+import re
 import pandas as pd
 
 def get_tabular_data(filepath: str, lineterminator: str = ",") -> pd.DataFrame:
@@ -48,12 +49,11 @@ def clean_cat(category: pd.Series) -> pd.Series:
     # clean_cat = category.str.split('/', n=1, expand=True) #.str[0]
     return clean_cat
 
-# def remove_emoji()
-
 def cleanse_data(file_path, lineterminator):
     tabular_data = get_tabular_data(file_path, lineterminator)
     tabular_data['price'] = clean_price(tabular_data['price'])
     tabular_data['category'] = clean_cat(tabular_data['category'])
+    tabular_data = tabular_data.astype(str).apply(lambda x: x.str.encode('ascii', 'ignore').str.decode('ascii')) # Removes emojis
     return tabular_data
 
 if __name__ == "__main__":

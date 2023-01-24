@@ -20,8 +20,8 @@ from image_loader import ProductImageCategoryDataset
 class ResNetCNN(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        # self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
-        self.layers = resnet50(weights=ResNet50_Weights)
+        self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
+        # self.layers = resnet50(weights=ResNet50_Weights)
         self.layers.fc = torch.nn.Linear(2048, 13)
 
         for param in self.layers.parameters():
@@ -123,27 +123,27 @@ if __name__ == '__main__':
         transforms.ToTensor(),
         ])    
     
-    dataset = ImagesDataset(transform=transform)
-    # img, labels = dataset[7100]
-    # img.show()
-    # print(labels)
-    # print(dataset.idx_to_category_name[labels])
+    dataset = ImagesDataset(transform=None)
+    img, labels = dataset[700]
+    img.show()
+    print(labels)
+    print(dataset.idx_to_category_name[labels])
     
     # products_df=dataset['products']
     # products_df=products_df.sample(frac=0.1)
 
-    train_set,val_set,test_set = split_dataset(dataset)
+    # train_set,val_set,test_set = split_dataset(dataset)
 
-    batch_size=16
-    train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
-    val_loader = DataLoader(val_set, batch_size=batch_size)
-    test_loader = DataLoader(test_set, batch_size=batch_size)
+    # batch_size=16
+    # train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
+    # val_loader = DataLoader(val_set, batch_size=batch_size)
+    # test_loader = DataLoader(test_set, batch_size=batch_size)
 
-    # TRAIN MODEL
-    print("Training Model...")
-    train(model, train_loader, val_loader, test_loader)
-    torch.save(model.state_dict(), f'model_evaluation/weights/ResNetCNN_{date_time}.pt')
-    print("Training Successfull")
+    # # TRAIN MODEL
+    # print("Training Model...")
+    # train(model, train_loader, val_loader, test_loader)
+    # torch.save(model.state_dict(), f'model_evaluation/weights/ResNetCNN_{date_time}.pt')
+    # print("Training Successfull")
 
     #  USE PRE TRAINED MODEL
     # print("Loading Existing Model...")
