@@ -72,13 +72,15 @@ class ImagesDataset(Dataset):
 
 if __name__ == "__main__":
     dataset=ImagesDataset(transform=None)
-    idx_to_cat=dataset.idx_to_category_name
-    with open('idx_to_cat.pkl', 'wb') as handle:
-        pickle.dump(idx_to_cat, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     cat_to_idx=dataset.category_name_to_idx
-    with open('cat_to_idx.pkl', 'wb') as handle:
+    with open('encoder.pkl', 'wb') as handle:
         pickle.dump(cat_to_idx, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    idx_to_cat=dataset.idx_to_category_name
+    with open('decoder.pkl', 'wb') as handle:
+        pickle.dump(idx_to_cat, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
 
 
