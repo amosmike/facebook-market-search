@@ -1,3 +1,4 @@
+#%%
 import pandas as pd
 
 def get_tabular_data(filepath: str, lineterminator: str = ",") -> pd.DataFrame:
@@ -47,6 +48,8 @@ def clean_cat(category: pd.Series) -> pd.Series:
     # clean_cat = category.str.split('/', n=1, expand=True) #.str[0]
     return clean_cat
 
+# def remove_emoji()
+
 def cleanse_data(file_path, lineterminator):
     tabular_data = get_tabular_data(file_path, lineterminator)
     tabular_data['price'] = clean_price(tabular_data['price'])
@@ -57,4 +60,4 @@ if __name__ == "__main__":
     file_path = "MetaMarketplaceMLEng/Assets/Products.csv"
     lineterminator = "\n"
     clean_tabular_data = cleanse_data(file_path, lineterminator)
-    # clean_tabular_data.to()
+    clean_tabular_data.to_csv("cleaned_products.csv")

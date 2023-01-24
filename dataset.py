@@ -39,9 +39,9 @@ class ImagesDataset(Dataset):
     def load_dataframe(self):
         '''loads the products csv from the Facebook Marketplace porject into a pandas Dataframe.
         Additinoally encodes the first layer of the product category as a unique int '''
-        product_df = pd.read_csv('MetaMarketplaceMLEng/Assets/Products.csv',lineterminator='\n', index_col=0) ######
+        product_df = pd.read_csv('cleaned_products.csv',lineterminator='\n', index_col=0) ######
         product_df['price'] = product_df['price'].replace('[\£,]', '', regex=True).astype(float)
-        image_df=pd.read_csv('MetaMarketplaceMLEng/Assets/Images.csv',lineterminator='\n', index_col=0) #######
+        image_df=pd.read_csv('Images.csv',lineterminator='\n', index_col=0) #######
         self.image_df=image_df.merge(product_df, left_on ='product_id', right_on='id')
         self.image_df['cat_L1'] = [catter.split("/")[0] for catter in self.image_df['category']]
         self.image_df=self.image_df.sample(frac=0.1) # THIS IS FOR DEBUG - makes dataset much smaller!

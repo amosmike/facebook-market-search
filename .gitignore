@@ -26,7 +26,6 @@ to_del.py
 cleaned_images
 *.jpg
 
-
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py
 */MetaMarketplaceMLEng/Assets/docker-compose.yml
