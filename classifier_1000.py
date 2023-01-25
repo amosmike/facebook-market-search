@@ -16,14 +16,22 @@ class TransferLearning(torch.nn.Module):
         self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
         # print(dir(self.layers))
         # print(self.layers.modules)
+        # print(self.layers.parameters())
 
         for param in self.layers.parameters():
             param.grad_required = False
 
-        self.layers.avgpool = Identity()
+        # self.layers.fc.grad_required = True
+        # self.layers.fc.grad_required = True
+        self.layers.fc.requires_grad = True
+        self.layers.avgpool.requires_grad = True   
+
+        # self.layers.avgpool.requires_grad_ = True
+
+        # self.layers.avgpool = Identity()
         linear_layers = torch.nn.Sequential(
-            torch.nn.Linear(32768, 2048),
-            torch.nn.ReLU(),
+            # torch.nn.Linear(32768, 2048),
+            # torch.nn.ReLU(),
             torch.nn.Linear(2048, 1000)
         )
         self.layers.fc = linear_layers

@@ -17,8 +17,8 @@ def train(
     val_loader,
     test_loader,
     lr = 0.0001,
-    epochs=20,
-    optimiser = torch.optim.SGD
+    epochs=5,
+    optimiser = torch.optim.AdamW # torch.optim.SGD
     ):
 
     ""
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=20,
+        epochs=5,
         lr=0.0001,
         optimiser=torch.optim.AdamW
     )
