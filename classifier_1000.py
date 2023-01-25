@@ -30,9 +30,10 @@ class TransferLearning(torch.nn.Module):
 
         # self.layers.avgpool = Identity()
         linear_layers = torch.nn.Sequential(
-            # torch.nn.Linear(32768, 2048),
-            # torch.nn.ReLU(),
-            torch.nn.Linear(2048, 1000)
+            torch.nn.Linear(2048, 1000),
+            torch.nn.ReLU(),
+            torch.nn.Linear(1000, 13)
+
         )
         self.layers.fc = linear_layers
         self.image_size = 128
