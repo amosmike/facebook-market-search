@@ -1,22 +1,22 @@
 #%%
-import torch 
-import numpy as np
-from tqdm import tqdm
-from datetime import datetime
-import torch.nn.functional as F
-from dataset import ImagesDataset
-from torchvision import transforms
-from torch.utils.data import DataLoader
-from classifier_1000 import TransferLearning
-from torch.utils.data import random_split
 from torch.utils.tensorboard import SummaryWriter
+from torch.utils.data import random_split
+from classifier import TransferLearning
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from dataset import ImagesDataset
+import torch.nn.functional as F
+from datetime import datetime
+from tqdm import tqdm
+import numpy as np
+import torch 
 
 def train(
     model,
     train_loader,
     val_loader,
     test_loader,
-    lr = 0.0001,
+    lr=0.001,
     epochs=5,
     optimiser = torch.optim.AdamW # torch.optim.SGD
     ):
@@ -26,6 +26,8 @@ def train(
     writer = SummaryWriter()
 
     optimiser = optimiser(model.parameters(), lr=lr)
+    # optimiser = torch.optim(model.parameters(), lr=lr)
+
     batch_idx = 0
     loss_total = 0
     hist_accuracy = []
@@ -36,10 +38,10 @@ def train(
             features, labels = batch
             prediction = model(features)
             loss = F.cross_entropy(prediction, labels) # Loss model changes label size 
+            optimiser.zero_grad() # gradient value reset. must be before backward? 
             loss.backward()
             optimiser.step()
             loss_total += loss.item()
-            optimiser.zero_grad() # gradient value reset
             writer.add_scalar('Loss', loss.item(), batch_idx)
 
             accuracy = torch.sum(torch.argmax(prediction, dim=1) == labels).item()/len(labels)
@@ -47,9 +49,7 @@ def train(
 
             batch_idx += 1
             pbar.set_description(f"Epoch = {epoch+1}/{epochs}. Acc = {round(np.mean(hist_accuracy), 2)}, Loss = {round(loss.item(), 2)}, Average Loss = {round(loss_total/batch_idx, 2)}" ) # Loss = {round(loss.item(), 2)},
-            # writer.add_scalar(f'Average Loss = {round(loss_total/batch_idx, 2)}', batch_idx)
             writer.add_scalar('Training Set Accuracy', np.mean(hist_accuracy), batch_idx)
-        
         
         # evaluate the validation set performance
         print('Evaluating on valiudation set...')
@@ -62,13 +62,13 @@ def train(
         torch.save(model.state_dict(), f'final_model/image_model.pt')
 
     print('Evaluating on test set...')
-    test_loss = evaluate(model, test_loader)
-    # writer.add_scalar("Loss/Test", test_loss, batch_idx)
+    test_loss, test_acc = evaluate(model, test_loader)
+    writer.add_scalar("Test Set Loss", test_loss, batch_idx)
+    writer.add_scalar("Test Set Accuracy", test_acc, batch_idx)
     model.test_loss = test_loss
-    # final_model_fn='test_final_model.pt'
-    # torch.save(model.state_dict(), final_model_fn)
+
     torch.save(model.state_dict(), f'final_model/image_model.pt') 
-    return model   # return trained model
+    return model # return trained model
 
 def evaluate(model, dataloader):
     losses = []
@@ -117,8 +117,8 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=5,
-        lr=0.0001,
+        epochs=10,
+        lr=0.00001,
         optimiser=torch.optim.AdamW
     )
 
