@@ -25,7 +25,7 @@ class ImageProcessor:
         img=self.transform(img).unsqueeze(0)
         assert torch.is_tensor(img) # immediately trigger error if condition false
 
-        prediction = self.model.forward(img) 
+        prediction = self.model.forward(img)
         probability = torch.nn.functional.softmax(prediction, dim=1)
         confidence, classes = torch.max(probability, 1)
         return self.decoder[classes.item()], round(confidence.item(), 2)
