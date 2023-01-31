@@ -35,7 +35,9 @@ def train(
     for epoch in range(epochs):
         pbar = tqdm(train_loader)
         for batch in pbar:
-            features, labels = batch
+            img, category_idx, image_id = batch
+            features = img
+            labels = category_idx
             prediction = model(features)
             loss = F.cross_entropy(prediction, labels) # Loss model changes label size 
             optimiser.zero_grad() # gradient value reset. must be before backward? 
@@ -75,7 +77,9 @@ def evaluate(model, dataloader):
     correct = 0
     n_examples = 0
     for batch in dataloader:
-        features, labels = batch
+        img, category_idx, image_id = batch
+        features = img
+        labels = category_idx
         prediction = model(features)
         loss = F.cross_entropy(prediction, labels)
         losses.append(loss.detach())

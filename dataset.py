@@ -46,7 +46,7 @@ class ImagesDataset(Dataset):
         if self.transform:
             img = self.transform(img)
         category_idx = self.cat_to_idx[self.image_df.iloc[idx]['cat_L1']]
-        return img, category_idx
+        return img, category_idx, image_id
 
     def __getimageid__(self, idx):
         image_id = self.image_df.iloc[idx]['id_x'] + '.jpg'

@@ -13,8 +13,7 @@ class TransferLearning(torch.nn.Module):
         # print(dir(self.layers))
         # print(self.layers.modules)
         # print(self.layers.parameters())
-        print(self.layers)
-
+        # print(self.layers)
 
         for i, param in enumerate(self.layers.parameters()): # unfreeze last two layers (4.1 and 4.2) of resnet50
             if i > 141 and i < 160:
