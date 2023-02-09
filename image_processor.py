@@ -9,18 +9,14 @@ from fastapi.responses import JSONResponse
 
 class ImageProcessor:
     def __init__(self, decoder: dict):
-        '''
-        '''
-        self.model= TransferLearning()
+        self.model=TransferLearning()
         self.transform=self.model.transform
         self.state_dict=torch.load('final_model/image_model.pt')
         self.model.load_state_dict(self.state_dict)
         # self.model.eval()
         self.decoder = decoder
         
-    def __prediction__(self, img):
-        '''
-        '''
+    def prediction(self, img):
         img=Image.open(img)
         img=self.transform(img).unsqueeze(0)
         assert torch.is_tensor(img) # immediately trigger error if condition false
@@ -32,15 +28,15 @@ class ImageProcessor:
 
 if __name__ == "__main__":
     dataset = ImagesDataset(transform=None)
-    img, cat_idx = dataset[7090]
-    imageid = dataset.__getimageid__(7090)
-    category = dataset.idx_to_cat[cat_idx]
+    img, category_idx, image_id = dataset[7090]
+    imageid = dataset.getimageid(7090)
+    category = dataset.idx_to_cat[category_idx]
     path = 'cleaned_images/'
     img.show()
 
     decoder = pd.read_pickle(r'decoder.pkl')    
     processor=ImageProcessor(decoder=decoder)
-    prediction, confidence = processor.__prediction__(path + imageid)
+    prediction, confidence = processor.prediction(path + imageid)
     print("PREDICTED CATEGORY:", prediction)
     print("CONFIDENCE:", confidence)
     print("CORRCT CATEGORY:", category)

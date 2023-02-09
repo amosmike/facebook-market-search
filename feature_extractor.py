@@ -19,11 +19,9 @@ def feature_extractor(model, img):
 
     with torch.no_grad():
         out = feat_ext(img.unsqueeze(0)) # disable when batched
-        # out = feat_ext(img)
 
     feat_maps = out[return_nodes].numpy().squeeze(0)
 
-    # print(feat_maps)
     return feat_maps
 
 if __name__ == "__main__":
@@ -35,7 +33,7 @@ if __name__ == "__main__":
         transforms.ToTensor(),
         ]) 
     dataset = ImagesDataset(transform=transform)
-    batch_size = 1  
+    # batch_size = 1  
     # dataset = DataLoader(dataset, shuffle=True, batch_size=batch_size)
     
     image_id_keys = []
@@ -47,14 +45,6 @@ if __name__ == "__main__":
         feature = feature_extractor(model, features)
         image_id_keys.append(image_id)
         image_feature_values.append(feature.tolist())
-
-    # img, labels, image_id = dataset[700]
-    # feature = feature_extractor(model, img)
-    # image_id_keys.append(image_id)
-    # image_feature_values.append(feature.tolist())
-
-    # print(image_id_keys)
-    # print(image_feature_values)
 
     dictionary = dict(zip(image_id_keys, image_feature_values)) # {"image_id": [feature]}
     
