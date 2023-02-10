@@ -22,9 +22,24 @@ class ImageProcessor:
         assert torch.is_tensor(img) # immediately trigger error if condition false
 
         prediction = self.model.forward(img)
+        prediction_list = prediction.tolist()[0]
+        prediction_list = ['%.2f' % elem for elem in prediction_list]
+
         probability = torch.nn.functional.softmax(prediction, dim=1)
-        confidence, classes = torch.max(probability, 1)
-        return self.decoder[classes.item()], round(confidence.item(), 2)
+        probability_list = probability.tolist()[0]
+        probability_list = ['%.2f' % elem for elem in probability_list]
+
+        confidence, category = torch.max(probability, 1)
+        print(round(confidence.item(), 2))
+
+        pos_cat_idx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        pos_cat_str = []
+        for i in pos_cat_idx:
+            pos_cat_str.append(decoder[i])
+
+        confidence_dic = dict(zip(pos_cat_str, probability_list))
+        
+        return self.decoder[category.item()], round(confidence.item(), 2), confidence_dic
 
 if __name__ == "__main__":
     dataset = ImagesDataset(transform=None)
@@ -32,14 +47,14 @@ if __name__ == "__main__":
     imageid = dataset.getimageid(7090)
     category = dataset.idx_to_cat[category_idx]
     path = 'cleaned_images/'
-    img.show()
+    # img.show()
 
-    decoder = pd.read_pickle(r'decoder.pkl')    
+    decoder = pd.read_pickle(r'decoder.pkl')  
     processor=ImageProcessor(decoder=decoder)
-    prediction, confidence = processor.prediction(path + imageid)
-    print("PREDICTED CATEGORY:", prediction)
-    print("CONFIDENCE:", confidence)
-    print("CORRCT CATEGORY:", category)
+    prediction, confidence, confidence_dic = processor.prediction(path + imageid)
+    # print("PREDICTED CATEGORY:", prediction)
+    # print("CONFIDENCE:", confidence)
+    # print("CORRCT CATEGORY:", category)
 
 
 #%%
