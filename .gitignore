@@ -29,6 +29,7 @@ tim*
 final_model
 test*
 image_embeddings.json
+faiss_prebuilt
 
 MetaMarketplaceMLEng/Assets/api_template.py
 /Users/michaelamos/Documents/AICore/Remote-Reps/fb-search/fb-search/MetaMarketplaceMLEng/Assets/api.py
