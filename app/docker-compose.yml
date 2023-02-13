@@ -1,0 +1,15 @@
+version : '3.9.12' # 3.4
+services:
+    model_serving_api:
+      build: .
+      ports: 
+        - 8080:8080
+      restart: always
+      environment:
+        # - BUCKET_NAME=${BUCKET_NAME}
+        - BUCKET_NAME=basicaccountstack-metamarketplacemleng-p-datalake-gam4bqp66kw5
+      network_mode: host
+      volumes: 
+        - /Users/michaelamos/Documents/AICore/Remote-Reps/facebook-market-search/app:/app
+
+# If changed remember to run 'docker-compose build'
