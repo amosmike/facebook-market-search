@@ -9,6 +9,8 @@ from tqdm import tqdm
 import torch 
 import json
 
+"Feature extractor used to extract the tensors of each image along with it's ID at the key to be used in the facebook_AI_similarity_search.py"
+
 def feature_extractor(model, img):
     model.eval()
     train_nodes, eval_nodes = get_graph_node_names(model)
