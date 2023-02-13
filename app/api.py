@@ -44,7 +44,7 @@ class ImageClassifier(TransferLearning):
 try:
     model = ImageClassifier()
     transform=model.transform
-    state_dict = torch.load('final_model/image_model.pt')
+    state_dict = torch.load('final_model_api/image_model.pt')
     model.load_state_dict(state_dict=state_dict)
 
 except:
