@@ -24,7 +24,6 @@ test_final_model.ipynb
 test.*
 to_del.py
 cleaned_images
-*.jpg
 tim*
 final_model
 test*

@@ -1,23 +1,12 @@
-import os
-import pickle
-import json
-
-import uvicorn
-import boto3
-import botocore
-import numpy as np
-
-from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import List
-from PIL import Image
-import torch.nn as nn
-import torch
-import pandas as pd
 from classifier import TransferLearning
 from fastapi import UploadFile
+from fastapi import FastAPI
 from fastapi import File
+from PIL import Image
+import pandas as pd
+import uvicorn
+import torch
 
 class ImageClassifier(TransferLearning):
     def __init__(self,
@@ -108,3 +97,5 @@ def predict_image(image: UploadFile = File(...)):
 
 if __name__ == '__main__':
   uvicorn.run(app, host='127.0.0.1', port='8000') # uvicorn api:app --reload
+
+  # http://127.0.0.1:8000/docs#/default/predict_image_predict_image_post

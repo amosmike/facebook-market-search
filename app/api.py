@@ -1,5 +1,4 @@
 #%%
-from flask import Flask, request, jsonify, abort
 from fastapi.responses import JSONResponse
 from classifier import TransferLearning
 from fastapi import UploadFile
@@ -7,11 +6,8 @@ from fastapi import FastAPI
 from fastapi import File
 from PIL import Image
 import pandas as pd
-import numpy as np
 import uvicorn
-import base64
 import torch
-import io
 
 class ImageClassifier(TransferLearning):
     def __init__(self,
@@ -72,32 +68,21 @@ def healthcheck():
   msg = "API is up and running!"
   return {"message": msg}
 
-@app.route("/predict/image", methods=['POST'])
-# @app.post('/predict/image', methods=['POST'])
+@app.post('/files/')
+async def create_file(file: bytes or None = File(default=None)):
+    if not file:
+        return {'message': "No file sent"}
+    else:
+        return {'file_size': len(file)}
+
+@app.post('/predict/image')
 def predict_image(image: UploadFile = File(...)):
-    if not request.json or 'image' not in request.json: 
-        abort(400)
-    
-    # get the base64 encoded string
-    im_b64 = request.json['image']
+    print(type(image))
+    img = Image.open(image.file)
+    img = transform(img).unsqueeze(0)
+    assert torch.is_tensor(img)
 
-    # convert it into bytes  
-    img_bytes = base64.b64decode(im_b64.encode('utf-8'))
-
-    # convert bytes data to PIL Image object
-    img = Image.open(io.BytesIO(img_bytes))
-
-    # PIL image object to numpy array
-    img_arr = np.asarray(img)      
-    print('img shape', img_arr.shape)
-
-    # img = Image.open(image, mode='rb')
-    # img = transform(img).unsqueeze(0)
-    # assert torch.is_tensor(img)
-
-    # prediction = model.forward(img)
-    prediction = model.forward(img_arr)
-
+    prediction = model.forward(img)
     prediction_list = prediction.tolist()[0]
     prediction_list = ['%.2f' % elem for elem in prediction_list]
 
@@ -120,5 +105,5 @@ def predict_image(image: UploadFile = File(...)):
     })
 
 if __name__ == '__main__':
-  uvicorn.run(app, host='127.0.0.1', port='8080') # uvicorn api:app --reload
-  # http://127.0.0.1:8080/docs
+  uvicorn.run(app, host='127.0.0.1', port='8000') # uvicorn api:app --reload
+  'http://localhost:8000/docs'
