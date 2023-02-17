@@ -15,4 +15,7 @@ The third milestone is focused on creating a vision model. The goal is to create
 The fourth milestone was to create a search index using FAISS. For this a feature extractor model is created to return a json with the image id as keys and the image tensor from 'layers.fc.1' as the values. This json is then used in the FAISS model with the faiss.IndexFlatL2 to find images with a like features.  
 
 ## Milestone 5 - Configure and Deploy the Model Serving API
-The fifth and final milestone involves configuring and deploying the model serving API. A script is written to create an API using FastAPI to take an image and return the predicted category with numerical confidence. This is done using the trained weights from the neural network model created in milestone 3. A Dcokerfile has also been produced for easy deployement.
+The fifth and final milestone involves configuring and deploying the model serving API. A script is written to create an API using FastAPI to take an image and return the predicted category with numerical confidence. This is done using the trained weights from the neural network model created in milestone 3. A Dcokerfile has also been produced for easy deployement. This can be done by navigating to the 'app' directory, then pasting 1 and 2 into the command terminal, then 3 into your browser. 
+1. 'docker build -t facebook-fast-api .'
+2. 'docker run -p 8000:8000 facebook-fast-api'
+3. 'http://localhost:8000/docs#/default/create_file_files__post'
